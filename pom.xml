@@ -8,8 +8,13 @@
         <scala.version>2.11.8</scala.version>
     </properties>
 
-
     <dependencies>
+
+        <dependency>
+            <groupId>org.nutz</groupId>
+            <artifactId>nutz</artifactId>
+            <version>1.r.68.v20191031</version>
+        </dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
@@ -39,7 +44,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.17</version>
+            <version>5.1.48</version>
         </dependency>
         <dependency>
             <groupId>postgresql</groupId>
@@ -61,11 +66,11 @@
             <artifactId>json4s-native_2.11</artifactId>
             <version>3.4.2</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.apache.poi</groupId>-->
-<!--            <artifactId>poi</artifactId>-->
-<!--            <version>3.10-FINAL</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.10-FINAL</version>
+        </dependency>
 
 <!--        <dependency>-->
 <!--            <groupId>org.apache.poi</groupId>-->
@@ -83,57 +88,56 @@
             <artifactId>mongo-spark-connector_2.11</artifactId>
             <version>2.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.nutz</groupId>
+            <artifactId>nutz</artifactId>
+            <version>1.r.68.v20191031</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-launcher_2.11</artifactId>
+            <version>2.1.0</version>
+        </dependency>
     </dependencies>
+
     <build>
         <sourceDirectory>src/main/scala</sourceDirectory>
         <testSourceDirectory>src/test/scala</testSourceDirectory>
-        <plugins>
-            <plugin>
-                <groupId>org.scala-tools</groupId>
-                <artifactId>maven-scala-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <scalaVersion>${scala.version}</scalaVersion>
-                    <args>
-                        <arg>-target:jvm-1.5</arg>
-                    </args>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-eclipse-plugin</artifactId>
-                <configuration>
-                    <downloadSources>true</downloadSources>
-                    <buildcommands>
-                        <buildcommand>ch.epfl.lamp.sdt.core.scalabuilder</buildcommand>
-                    </buildcommands>
-                    <additionalProjectnatures>
-                        <projectnature>ch.epfl.lamp.sdt.core.scalanature</projectnature>
-                    </additionalProjectnatures>
-                    <classpathContainers>
-                        <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
-                        <classpathContainer>ch.epfl.lamp.sdt.launching.SCALA_CONTAINER</classpathContainer>
-                    </classpathContainers>
-                </configuration>
-            </plugin>
-        </plugins>
+       <plugins>
+           <plugin>
+               <groupId>net.alchim31.maven</groupId>
+               <artifactId>scala-maven-plugin</artifactId>
+               <version>3.2.2</version>
+               <executions>
+                   <execution>
+                       <id>compile-scala</id>
+                       <phase>compile</phase>
+                       <goals>
+                           <goal>add-source</goal>
+                           <goal>compile</goal>
+                       </goals>
+                   </execution>
+                   <execution>
+                       <id>test-compile-scala</id>
+                       <phase>test-compile</phase>
+                       <goals>
+                           <goal>add-source</goal>
+                           <goal>testCompile</goal>
+                       </goals>
+                   </execution>
+               </executions>
+               <configuration>
+                   <scalaVersion>${scala.version}</scalaVersion>
+               </configuration>
+           </plugin>
+           <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-compiler-plugin</artifactId>
+               <configuration>
+                   <source>6</source>
+                   <target>6</target>
+               </configuration>
+           </plugin>
+       </plugins>
     </build>
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.scala-tools</groupId>
-                <artifactId>maven-scala-plugin</artifactId>
-                <configuration>
-                    <scalaVersion>${scala.version}</scalaVersion>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
 </project>
