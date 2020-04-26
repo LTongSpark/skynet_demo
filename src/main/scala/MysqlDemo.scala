@@ -1,5 +1,7 @@
-import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 
+import org.apache.spark.sql.{DataFrame, Row, SparkSession}
+import org.json4s.DefaultFormats
+import org.json4s.jackson.Json
 /**
   * Author: LTong
   * Date: 2019-10-24 下午 5:52
@@ -33,28 +35,71 @@ object MysqlDemo {
     jdbcDF = spark.read.jdbc(url, s"(SELECT (@rowNum:=@rowNum+1) AS rowNo ,${tableName}.* FROM ${tableName}, (SELECT (@rowNum :=0)) b) t", "rowNo",
       0, count, partion.size, prop)
 
-    println(jdbcDF.count())
 
     var tong = SchemaUtil.createDataFrame(spark, jdbcDF)
     //tong.show(100,false)
     import org.apache.spark.sql.functions.concat_ws
 
-    val data = tong.select(tong.col("user_type"),
-      tong.col("user_id"), tong.col("infotype"))
+    val data = tong.select(tong.col("interface_no").as("tong"))
+
+    val tong1 = data.rdd.filter(rdd =>rdd.getAs[String]("tong") !="1").map(rdd =>{
+      (rdd.getString(0))
+    })
+    println(tong1.isEmpty())
+    data.show(10 ,false)
+
+
+//    import spark.implicits._
+//    data.show(10)
+//    data.na.fill("",data.schema.map(_.name)).rdd.map(rdd =>{
+//      val infor=rdd.getAs[String]("infotype")
+//      val user=rdd.getAs[String]("user_type")
+//      var lac = ""
+//      var ci = ""
+//      var map:Map[String ,String] = Map()
+//      if(infor.equals("")){
+//      }
+//      if(!infor.equals("")){
+//        val arr = infor.split("_")
+//        if(arr.size ==0){
+//        }else if(arr.size ==1){
+//          lac = arr(0)
+//        }else if(arr.size ==2){
+//          lac = arr(0)
+//          ci = arr(1)
+//        }
+//      }
+//      map +=("lac" ->lac)
+//      map +=("ci" ->ci)
+//      map +=("user" ->user)
+//      (Json(DefaultFormats).write(map).mkString("[","","]"))
+//    }).toDF("map")
+//
+//
+//      .show(false)
 
 
 
-    data.rdd.foreach(println)
-    println("==============================================")
-    data.dropDuplicates(Array("user_type")).rdd.foreach(println)
 
-    println("==============================================")
-    data
-      .rdd.map(rdd => {
-      val tong = rdd.toString().substring(1, rdd.toString().length - 1).split(",")
-      if (tong.length > 1) (tong(0), tong(1))
-      else Nil
-    }).filter(!_.equals(Nil)).map(_.asInstanceOf[Tuple2[String ,String]]).foreach(println)
+
+
+//    data.rdd.map(rdd =>{
+//      (rdd.getAs[String]("user_type") ,rdd.getString(rdd.fieldIndex("user_type")) ,rdd.apply(rdd.fieldIndex("user_type")))
+//    }).foreach(println)
+
+
+
+//    data.rdd.foreach(println)
+//    println("==============================================")
+//    data.dropDuplicates(Array("user_type")).rdd.foreach(println)
+//
+//    println("==============================================")
+//    data
+//      .rdd.map(rdd => {
+//      val tong = rdd.toString().substring(1, rdd.toString().length - 1).split(",")
+//      if (tong.length > 1) (tong(0), tong(1))
+//      else Nil
+//    }).filter(!_.equals(Nil)).map(_.asInstanceOf[Tuple2[String ,String]]).foreach(println)
     // tong.show(false)
 
     //    tong.write.format("csv").option("multiLine", true).save(s"file:///d:/mr/tong5")
@@ -67,6 +112,8 @@ object MysqlDemo {
   def saveCsv(data: DataFrame, path: String): Unit = {
     data.write.format("csv").option("header", "true").save(path)
   }
+
+
 
   case class User(id: Int, studentid: Int, name: String, age: Int, sex: String, birthday: String)
 

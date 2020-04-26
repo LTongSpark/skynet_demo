@@ -20,7 +20,7 @@ public class tong {
                              .setMaster("yarn")
                              .setDeployMode("cluster")
                              .setConf("spark.app.id", "11222")
-                             .setConf("spark.driver.memory", "2g")
+                             .setConf(SparkLauncher.DRIVER_MEMORY, "2g")
                              .setConf("spark.akka.frameSize", "200")
                              .setConf("spark.executor.memory", "1g")
                              .setConf("spark.executor.instances", "32")
@@ -44,13 +44,8 @@ public class tong {
                  } catch (IOException e) {
                      e.printStackTrace();
                  }
-
+                 System.out.println(handle.getState().toString());
              }
-
          });
-
-
-
-
     }
 }
